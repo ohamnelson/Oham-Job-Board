@@ -4,8 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oham Job Board</title>
+
+    <link rel="stylesheet" href="styles/jobs.css">
 </head>
 <body>
-    
+    <!-- <input class="job-search-bar" placeholder="search jobs using keywords" required> -->
+    <div class="job-header">
+        <input class="job-search-bar" placeholder="search jobs using keywords" required>
+        <div class="job-filter">
+            <input class="job-location-filter" placeholder="Location">
+            <button class="job-more-filters">More Filters</button>
+        </div>
+        <button class="job-search-button">Search Jobs</button>
+    </div>
+
+    <div class="jobs-total-sort">
+        <div class="jobs-found">300,000 jobs found</div>
+        <div class="sort-jobs">
+            <label for="sort-selection">Sort by:</label>
+            <select id="sort-selection" name="sort">
+                <option value="salary">Salary</option>
+                <option value="job type">Job type</option>
+            </select>
+               
+        </div>
+       
+
+    </div>
 </body>
 </html>

@@ -1,0 +1,54 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-size: 16px;
+}
+
+.job-header {
+    /* border: 1px red solid; */
+    width: 0px auto;
+    margin: 8px;
+    padding: 8px
+}
+
+.job-search-bar, .job-search-button {
+    padding: 8px;
+    margin: 16px auto;
+    border-radius: 8px;
+    width: 100%;
+    border: 1px grey solid;
+    font-size: 1.2rem;
+}
+
+.job-filter {
+    /* border: 1px red solid; */
+    display: flex;
+    gap: 8px;
+}
+
+.job-location-filter {
+    padding: 8px;
+    font-size: 1.2rem;
+    flex-grow: 2;
+    border-radius: 8px;
+    border: 1px black solid;
+    width: 50%;
+}
+
+.job-more-filters {
+    padding: 8px;
+    /* font-size: 1.2rem; */
+    border-radius: 8px;
+    border: 1px black solid;
+}
+
+.jobs-total-sort {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px auto;
+    border: 1px black solid;
+}
