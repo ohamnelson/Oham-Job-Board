@@ -8,6 +8,11 @@ body {
     font-size: 16px;
 }
 
+small {
+    font-size: 0.8rem    
+}
+
+
 .job-header {
     /* border: 1px red solid; */
     width: 0px auto;
@@ -22,6 +27,11 @@ body {
     width: 100%;
     border: 1px grey solid;
     font-size: 1.2rem;
+}
+
+.job-search-button {
+    background-color: #0C0A09;
+    color: #F9FAFB;
 }
 
 .job-filter {
@@ -50,5 +60,57 @@ body {
     display: flex;
     justify-content: space-between;
     margin: 8px auto;
-    border: 1px black solid;
+    /* border: 1px black solid; */
+}
+
+.jobs-total-sort {
+    margin: 0px 16px;
+    padding: 8px
+}
+
+#sort-selection {
+    padding: 4px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.job-listings {
+    
+    margin: 16px auto;
+    /* padding: 8px; */
+    /* border: 1px black solid; */
+}
+
+.job-card {
+    border: 1px #CBD5E1 solid;
+    display: flex;
+    gap: 16px;
+    max-width: 400px;
+    /* width: 80%; */
+    margin: 8px auto;
+    border-radius: 8px;
+    cursor: pointer;
+
+}
+
+.job-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding:4px
+}
+
+.job-card-logo {
+    padding: 8px
+}
+
+.job-card-location {
+    color: #64748B;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.job-card-date {
+    color: #64748B;
+
 }
