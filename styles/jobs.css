@@ -6,12 +6,8 @@
 
 body {
     font-size: 16px;
+    font-family: "Poppins";
 }
-
-small {
-    font-size: 0.8rem    
-}
-
 
 .job-header {
     /* border: 1px red solid; */
@@ -75,7 +71,7 @@ small {
 }
 
 .job-listings {
-    
+
     margin: 16px auto;
     /* padding: 8px; */
     /* border: 1px black solid; */
@@ -104,6 +100,14 @@ small {
     padding: 8px
 }
 
+.job-card-title {
+    font-weight: 600;
+}
+
+.job-card-company {
+    font-weight:300;
+}
+
 .job-card-location {
     color: #64748B;
     margin-bottom: 8px;
@@ -112,5 +116,8 @@ small {
 
 .job-card-date {
     color: #64748B;
+    font-size: 0.8rem;
+    font-weight: 200;
 
 }
+
