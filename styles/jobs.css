@@ -50,6 +50,7 @@ body {
     /* font-size: 1.2rem; */
     border-radius: 8px;
     border: 1px black solid;
+    cursor: pointer;
 }
 
 .jobs-total-sort {
@@ -71,9 +72,23 @@ body {
 }
 
 .expand-more-filters {
+    display: none;
     border: 1px black solid;
-    margin: 16px;
+    background-color: bisque;
+    /* margin: 16px; */
+    border-radius: 8px;
     padding: 8px;
+    position: relative;
+}
+
+.more-filters-close {
+    position: absolute;
+    right: 8px;
+    top: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 2rem;
 }
 
 .date-posted-filter, .job-type-filter {

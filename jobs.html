@@ -18,7 +18,7 @@
         <input class="job-search-bar" placeholder="search jobs using keywords" required>
         <div class="job-filter">
             <input class="job-location-filter" placeholder="Location">
-            <button class="job-more-filters">More Filters</button>
+            <button class="job-more-filters js-more-filters">More Filters</button>
         </div>
         <button class="job-search-button">Search Jobs</button>
     </div>
@@ -36,8 +36,9 @@
 
     </div>
 
-    <div class="expand-more-filters">
+    <div class="expand-more-filters js-expand-more-filters">
         <p>Date Posted</p>
+        <button class="more-filters-close js-more-filter-close">&times;</button>
         <div class="date-posted-filter">
             <!-- Date Posted Filters -->
             <label><input type="radio" name="Date posted" value="Any time"> Any time</label>
@@ -120,5 +121,8 @@
     </div>
 
  
+    <script src="scripts/jobs.js">
+
+    </script>
 </body>
 </html>
