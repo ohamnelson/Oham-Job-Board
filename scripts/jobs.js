@@ -8,3 +8,11 @@ document.querySelector('.js-more-filter-close')
     .addEventListener('click', () => {
         moreFilters.style.display = 'none'
     })
+
+document.querySelectorAll('.job-card')
+    .forEach((jobCard) => {
+        jobCard.addEventListener('click', () => {
+            window.location.href = 'apply.html'
+        })
+    })
+    
