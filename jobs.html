@@ -14,7 +14,6 @@
 
 </head>
 <body>
-    <!-- <input class="job-search-bar" placeholder="search jobs using keywords" required> -->
     <div class="job-header">
         <input class="job-search-bar" placeholder="search jobs using keywords" required>
         <div class="job-filter">
@@ -34,6 +33,28 @@
                 <option value="date">Date</option>
             </select>
         </div>
+
+    </div>
+
+    <div class="expand-more-filters">
+        <p>Date Posted</p>
+        <div class="date-posted-filter">
+            <!-- Date Posted Filters -->
+            <label><input type="radio" name="Date posted" value="Any time"> Any time</label>
+            <label><input type="radio" name="Date posted" value="Past month"> Past month</label>
+            <label><input type="radio" name="Date posted" value="Past week"> Past week</label>
+            <label><input type="radio" name="Date posted" value="Past 24 hours"> Past 24 hours</label>
+        </div>
+
+        <p>Job Type</p>
+        <div class="job-type-filter">
+            <!-- Job Type Filters -->
+            <label><input type="checkbox" name="Date posted" value="Any time"> Any time</label>
+            <label><input type="checkbox" name="Date posted" value="Past month"> Past month</label>
+        </div>
+        
+
+
     </div>
 
     <div class="job-listings">
