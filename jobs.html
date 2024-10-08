@@ -28,7 +28,7 @@
     </div>
 
     <div class="jobs-total-sort">
-        <div class="jobs-found">300,000 jobs found</div>
+        <div class="jobs-found js-jobs-found">300,000 jobs found</div>
         <div class="sort-jobs">
             <label for="sort-selection">Sort by:</label>
             <select id="sort-selection" name="sort-selection">
@@ -53,10 +53,10 @@
         <button class="more-filters-close js-more-filter-close">&times;</button>
         <div class="date-posted-filter">
             <!-- Date Posted Filters -->
-            <label><input type="radio" name="Date posted" value="Any time"> Any time</label>
-            <label><input type="radio" name="Date posted" value="Past month"> Past month</label>
-            <label><input type="radio" name="Date posted" value="Past week"> Past week</label>
-            <label><input type="radio" name="Date posted" value="Past 24 hours"> Past 24 hours</label>
+            <label><input type="radio" name="datePosted" value="Any time"> Any time</label>
+            <label><input type="radio" name="datePosted" value="Past month"> Past month</label>
+            <label><input type="radio" name="datePosted" value="Past week"> Past week</label>
+            <label><input type="radio" name="datePosted" value="Past 24 hours"> Past 24 hours</label>
         </div>
 
         <p>Job Type</p>
@@ -71,8 +71,8 @@
     </div>
 
     <div class="job-listings">
-        <div class="job-card-section">
-            <div class="job-card">
+        <div class="job-card-section js-job-card-section">
+            <!-- <div class="job-card">
                 <img class="job-card-logo" src="job-image.png" height="80px" width="80px">
                 <div class="job-card-text">
                     <p class="job-card-title">Software Engineer</p>
@@ -130,7 +130,7 @@
                     <p class="job-card-location">Calgary, canada</p>
                     <p class="job-card-date">Posted 3 days ago</p>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <div class="big-job-card-apply">
@@ -144,7 +144,7 @@
     </div>
 
  
-    <script src="scripts/jobs.js">
+    <script type="module" src="scripts/home.js">
 
     </script>
 </body>

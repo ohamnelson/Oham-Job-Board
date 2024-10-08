@@ -16,3 +16,20 @@ document.querySelectorAll('.job-card')
         })
     })
     
+export const fetchJobData = () => {
+    fetch(
+        'http://127.0.0.1:8000/jobs'
+        ).then((response) => {
+            return response.json() 
+    
+        }).then((Jobs) => {
+            // console.log(Jobs)
+        })
+        .catch((error) => {
+        console.log('Unexpected error. Please try again later');
+      })
+
+} 
+
+
+    

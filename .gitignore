@@ -4,3 +4,4 @@ test.html
 jobsite/
 *.json
 *.pyc
+*.pk1
