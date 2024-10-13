@@ -31,6 +31,7 @@ def fetch_jobs(
     title: Optional[str] = Query(None),  # Optional filter for title
     location: Optional[str] = Query(None),  # Optional filter for location
     date: Optional[str] = Query(None),
+    sort: Optional[str] = Query(None),
     db: Session = Depends(get_db)):
     """
     Fetch jobs from the database with pagination.
@@ -40,7 +41,7 @@ def fetch_jobs(
     :return: list of jobs
     """
     query = db.query(Job)
-    print(date)
+    print(sort)
 
     # Apply date filter
     if date:
@@ -50,15 +51,18 @@ def fetch_jobs(
         if date == "Past 24 hours":
             past_24_hours = current_time - timedelta(hours=24)
             print(past_24_hours)
-            query = query.filter(Job.PublicationDate >= past_24_hours)
+            query = query.filter(Job.PublicationDate >= past_24_hours.date())
 
         elif date == "Past week":
             past_week = current_time - timedelta(weeks=1)
-            query = query.filter(Job.PublicationDate >= past_week)
+            query = query.filter(Job.PublicationDate >= past_week.date())
 
         elif date == "Past month":
             past_month = current_time - timedelta(days=30)
-            query = query.filter(Job.PublicationDate >= past_month)
+            query = query.filter(Job.PublicationDate >= past_month.date())
+        
+        elif date == "Any time":
+            pass
 
     # Apply filtering based on the query parameters
     if title:
@@ -66,12 +70,16 @@ def fetch_jobs(
     if location:
         query = query.filter(Job.Location.ilike(f"%{location}%"))  # Case-insensitive search
 
+    # Apply sort filter
+    if sort == "date":
+        print(sort == "date")
+        query = query.order_by(Job.PublicationDate.desc())
+
+
     total_count = query.count()
     print(total_count)
 
-    # print(query)
     jobs = (
-        # db.query(Job)
         query
         # .order_by(Job.PublicationDate.desc())
         .offset(offset)

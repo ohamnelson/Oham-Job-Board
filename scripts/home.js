@@ -1,19 +1,24 @@
-// import { fetchJobData } from "./jobs";
-let currentOffset = 0;
 const limit = 10;
+let currentOffset = 0;
+let offset = 0;
 let jobs = []
 let title = document.querySelector('.job-search-bar').value
 let location = document.querySelector('.job-search-bar').value
+let dropdown = document.getElementById('sort-selection')
+let sortValue = dropdown.value
+
+console.log(currentOffset)
+
 const getSelectedRadioValue = () => {
     let selectedRadio = document.querySelector('input[name="datePosted"]:checked');
     return selectedRadio ? selectedRadio.value : '';  // Return value if selected, otherwise return null
 };
+
 let date = getSelectedRadioValue();
+
     
-
-
-const fetchJobData = async (limit, offset, title= '', location='', date='') => {
-    let url = `http://127.0.0.1:8000/jobs?offset=${offset}&limit=${limit}`;
+const fetchJobData = async (title= '', location='', date='', sortValue='') => {
+    let url = `http://127.0.0.1:8000/jobs?offset=${currentOffset}&limit=${limit}`;
     if(title) {
         url +=`&title=${title}`
     }
@@ -23,6 +28,10 @@ const fetchJobData = async (limit, offset, title= '', location='', date='') => {
     if(date) {
         url += `&date=${date}`
     }
+    if(sortValue) {
+        url += `&sort=${sortValue}`
+    }
+    console.log(url)
     const response = await fetch(url);
     const data =  await response.json() 
     return data
@@ -52,13 +61,14 @@ const displayJobs = async (jobsData, jobsFound=0) => {
     document.querySelector('.js-jobs-found').innerHTML = `${jobsFound} jobs found`;
     document.querySelector('.js-job-card-section').innerHTML += jobsHTML; // Insert the job cards into the DOM
 };
-// displayJobs();
 
 // Function to load more jobs when user scrolls near the bottom
-const loadMoreJobs = async (title="", location="", date="") => {
-    let jobsData = await fetchJobData(limit, currentOffset, title, location, date); // Fetch jobs with pagination
+const loadMoreJobs = async (title="", location="", date="", sortValue="") => {
+    let jobsData = await fetchJobData(title, location, date, sortValue); // Fetch jobs with pagination
+    console.log(jobsData)
     displayJobs(jobsData['jobs'], jobsData['jobCount']);  // Render the jobs
     currentOffset += limit;  // Increment the offset
+    console.log(currentOffset)
 };
 
 
@@ -70,8 +80,9 @@ document.querySelector('.job-search-button')
         console.log(date)
         jobs = []
         currentOffset = 0
-        const jobsData = await fetchJobData(limit, currentOffset, title, location, date); // Fetch jobs with pagination
+        const jobsData = await fetchJobData(title, location, date); // Fetch jobs with pagination
         document.querySelector('.js-job-card-section').innerHTML = ''
+        // window.location.href = url
         displayJobs(jobsData['jobs'], jobsData['jobCount'])
         currentOffset += limit;
         document.querySelector('.js-expand-more-filters').style.display = 'none'
@@ -90,6 +101,15 @@ window.addEventListener('scroll', () => {
     }
 });
 
+dropdown.addEventListener('change', async() => {
+    document.querySelector('.js-job-card-section').innerHTML = ''
+    sortValue = dropdown.value;
+    console.log(sortValue)
+    currentOffset = 0
+    await loadMoreJobs(title, location, date, sortValue)
+    // console.log(jobs)
+    // fetchJobData(limit, offset, title, location, date, sortValue)
+})
 
 
 
