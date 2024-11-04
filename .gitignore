@@ -5,3 +5,4 @@ jobsite/
 *.json
 *.pyc
 *.pk1
+*.csv

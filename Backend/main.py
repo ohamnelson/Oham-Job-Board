@@ -4,11 +4,17 @@ import uvicorn
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List, Optional
-from .database import engine, get_db, Job
+from Backend.database import engine, get_db, Job
 from datetime import datetime, timedelta
+from sentence_transformers import SentenceTransformer
+import numpy as np
+import pickle
+import faiss
+from Backend.utils import compute_cosine_similarities, get_n_max_indices, get_values_from_indices
 
 
 app = FastAPI()
+encoder = SentenceTransformer("all-mpnet-base-v2")
 
 # Add CORS middleware
 origins = [
@@ -102,9 +108,61 @@ async def get_job(jobId: int, db: Session = Depends(get_db)):
             "Title": job.Title,
             "Description": job.Description,
             "CompanyLogo": job.CompanyLogo,
+            "CompanyName": job.CompanyName,
         }
     else:
         raise HTTPException(status_code=404, detail="Job not found")
+    
+@app.get("/job/similar/{jobId}")
+async def get_job(jobId: int, db: Session = Depends(get_db)):
+
+    # Query the database to get the job with the given job_id
+    job = db.query(Job).filter(Job.Id == jobId).first()
+
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    try:
+        # Encode the job description
+        searchQuery = encoder.encode(job.Description)
+        searchQuery = searchQuery.reshape((1, -1))  # Ensure vector has shape (1, 768)
+        print(f"Search query shape: {searchQuery.shape}")
+
+        # Load the FAISS index and job IDs from disk
+        with open('Backend/jobIndex.pk1', 'rb') as jobIndexFile, \
+             open('Backend/jobId.pk1', 'rb') as jobIdFile:
+            jobIndex = pickle.load(jobIndexFile)
+            print(jobIndex.shape)
+            jobId = pickle.load(jobIdFile)
+            print(len(jobId))
+            print("Job vectors and IDs loaded")
+
+        final = compute_cosine_similarities(jobIndex, searchQuery)
+        position = get_n_max_indices(final, 11)
+        jobPosition = get_values_from_indices(jobId, position)
+        print(jobPosition)
+        
+        # Query the database to get the matching jobs
+        results = db.query(Job).filter(Job.Id.in_(jobPosition)).all()
+
+        # Create a dictionary with Ids as keys for easy lookup
+        job_dict = {job.Id: job for job in results}
+
+        # Sort results according to the order in jobPosition
+        sorted_results = [job_dict[job_id] for job_id in jobPosition if job_id in job_dict]
+
+        # Return job IDs and results exept the 1st index; which is the same as the search query
+        return {
+            "results": sorted_results,
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+    finally:
+        # Resources like file handles and db session will automatically be cleaned up here
+        print("Cleanup complete")
+
 
 if __name__ == "__main__":
     uvicorn.run(app)

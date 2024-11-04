@@ -1,0 +1,22 @@
+* {
+    margin: 8px;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins";
+}
+
+body {
+    font-size: 14px;
+    font-family: "Poppins";
+}
+.apply-header {
+    display: flex;
+    /* border: 1px solid black; */
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.similar-jobs {
+    display: flex;
+    border: 1px solid black;
+}

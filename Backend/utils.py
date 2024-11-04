@@ -1,4 +1,5 @@
 import re
+import numpy as np
 from bs4 import BeautifulSoup
 from sqlalchemy.dialects.postgresql import insert
 
@@ -92,7 +93,42 @@ def insert_on_conflict_nothing(table, conn, keys, data_iter):
     result = conn.execute(stmt)
     return result.rowcount
 
-search_query = """
-<br><br><div class="h3">Company Description</div><br><br><div class="h3">Job Description</div><p><strong>About you:</strong></p><p>We are seeking a Machine Learning Engineer with over 3 years of experience to join our team. The successful candidate will specialize in collecting, processing, and analyzing textual data from various web sources to drive insights that inform business strategies.</p><p>You are someone who wants to influence your own development. You’re looking for a company where you have the opportunity to pursue your interests and be able to grow professionally.</p><p><strong>You bring to Applaudo the following competencies:</strong></p><ul style=""><li style="">Minimum +2 years of experience as a Machine Learning Engineer.</li><li style="">Strong programming skills in Python.</li><li style="">Experience with Cloud functions in GCP.</li><li style="">Experience using Dialogflow CX.</li><li style="">Proficient in using GCP and related GCP services for deploying and managing ML models.</li><li style="">Must: Expertise in applying RAG for enhancing model capabilities in real-time decision-making processes.</li><li style="">In-depth knowledge of data structures, data modeling, and software architecture.</li><li style="">Advanced understanding of mathematics, statistics, and algorithms.</li><li style="">Proven track record of working on NLP projects and applying natural language processing in a professional setting.</li><li style="">Advanced english level, as you'll be working directly with US clients.</li><li style="">Desirable: Strong foundation in MLOps practices, including automation of model lifecycle, continuous integration/continuous deployment (CI/CD) of ML models, and monitoring model performance.</li><li style="">Desirable: Highly-skilled in deploying tools like VCS (git) and collaboration (Docker and Kubernetes)</li><li style="">Desirable: Ability to work in Agile environments and proficiency with project management and collaboration tools.</li></ul><p><strong>You will be accountable for the following responsibilities:</strong></p><ul style=""><li style="">Design, develop and maintain conversation flows in Dialogflow CX.</li><li style="">Build and optimize complex conversation flows using Dialogflow CX.</li><li style="">Utilize advanced NLP techniques and ML frameworks to extract meaningful information and trends from textual data.</li><li style="">Implement and manage RAG and other relevant techniques, knowing when to apply each method for optimal results.</li><li style="">Collaborate with cross-functional teams to translate data insights into actionable business outcomes.</li><li style="">Design and maintain robust MLOps pipelines to streamline model training, deployment, and monitoring.</li></ul><br><br><div class="h3">Qualifications</div><br><br><div class="h3">Additional Information</div><div></div><p>Here at Applaudo Studios values as <strong>trust, communication, respect, excellence and team work</strong> are our keys to success. We know we are working with the best and thus treat each other with respect and admiration without asking.</p><p>Submit your application today, and don't miss this opportunity to join the Best Digital team in the Region!</p>
-<p>We truly appreciate all the hard and outstanding work our team makes every day at Applaudo Studios, and that's why the perks that we offer, are deeply thought and designed as a way to thank them for their commitment and excellence.</p><p>Some of our perks and benefits:</p><ul style=""><li style="">Work from home</li><li style="">Flexible schedule</li><li style="">Celebrations</li><li style="">Special discounts</li><li style="">Entertainment area</li><li style="">Flexible work spaces</li><li style="">Great work environment</li><li style="">Private medical insurance</li></ul><p>*B<em>enefits may vary according to your location and/or availability. Request further information when applying.</em></p><img src="https://remotive.com/job/track/1932572/blank.gif?source=public_api" alt=""/>
-"""
+
+
+def compute_cosine_similarities(jobIndex, search_vector):
+    # Ensure jobIndex is a numpy array
+    jobIndex = np.asarray(jobIndex)
+    
+    # Reshape search_vector to (1, n_dimensions) if it’s a 1D array
+    search_vector = search_vector.reshape(1, -1)
+    
+    # Compute the dot product between jobIndex and search_vector
+    dot_product = np.dot(jobIndex, search_vector.T).flatten()
+    
+    # Compute magnitudes of the vectors in jobIndex and the search_vector
+    jobIndex_magnitudes = np.linalg.norm(jobIndex, axis=1)
+    search_vector_magnitude = np.linalg.norm(search_vector)
+    
+    # Compute cosine similarities by dividing the dot product by magnitudes
+    cosine_similarities = dot_product / (jobIndex_magnitudes * search_vector_magnitude)
+    
+    return cosine_similarities
+
+def get_n_max_indices(arr, n):
+    # Ensure n does not exceed the array size
+    if n > arr.size:
+        raise ValueError("n cannot be greater than the number of elements in the array.")
+    
+    # Use argsort to get indices of sorted elements, take last n for largest elements
+    max_indices = np.argsort(arr)[-n:][::-1]
+    
+    return max_indices
+
+def get_values_from_indices(values_list, indices_array):
+    # Convert the list to a numpy array if not already
+    values_array = np.array(values_list)
+    
+    # Use the indices array to retrieve corresponding values
+    result = values_array[indices_array]
+    
+    return result.tolist()  # Convert to list if desired

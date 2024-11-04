@@ -97,7 +97,7 @@ window.addEventListener('scroll', () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
         // If the user is near the bottom, load more jobs
         // console.log(title)
-        loadMoreJobs(title, location, date);
+        loadMoreJobs(title, location, date, sortValue);
     }
 });
 
@@ -106,9 +106,8 @@ dropdown.addEventListener('change', async() => {
     sortValue = dropdown.value;
     console.log(sortValue)
     currentOffset = 0
+    jobs = [] //This ensures thatjobs have the right index when clicked
     await loadMoreJobs(title, location, date, sortValue)
-    // console.log(jobs)
-    // fetchJobData(limit, offset, title, location, date, sortValue)
 })
 
 

@@ -36,6 +36,7 @@ class Job(Base):
     Description = Column(Text)
     Salary = Column(Integer)
 
+
 # Create all tables
 Base.metadata.create_all(engine)
 
