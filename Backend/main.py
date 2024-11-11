@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import pickle
-import faiss
 from Backend.utils import compute_cosine_similarities, get_n_max_indices, get_values_from_indices
 
 
@@ -153,7 +152,7 @@ async def get_job(jobId: int, db: Session = Depends(get_db)):
 
         # Return job IDs and results exept the 1st index; which is the same as the search query
         return {
-            "results": sorted_results,
+            "results": sorted_results[1:],
         }
 
     except Exception as e:

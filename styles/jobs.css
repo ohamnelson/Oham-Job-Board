@@ -224,10 +224,15 @@ body {
 @media  screen and (min-width: 768px) {
     .big-job-search-button {
         display: block;
+        cursor: pointer;
     }
     body {
         font-size: 18px;
         font-family: "Poppins";
+    }
+    .job-header {
+        max-width: 1400px;
+        margin: 0 auto;
     }
     .job-filter {
         display: none;
@@ -252,18 +257,35 @@ body {
     .job-listings {
         padding: 16px 16px;
         gap: 16px;
+        max-width: 1200px;
+        margin: 0 auto;
+        justify-content: center; /* Centers the items inside */
+
     }
     .job-card-section {
         /* margin: 16px 0px; */
-        max-width: 600px;
+        max-width: 400px;
         padding: 16px;
+        height: 600px; /* Set a fixed height or a max-height */
+        overflow-y: auto; /* Enables vertical scroll */
     }
     .job-card {
         max-width: 600px;
     }
     .big-job-card-apply {
         display: block;
+        flex: 2;
+        height: 800px; /* Set a fixed height or a max-height */
+        overflow-y: auto; /* Enables vertical scroll */
+        padding: 16px; /* Optional: add padding for better readability */
         /* flex-grow: 1; */
     }
+    .js-big-similar-job-card-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust 250px to desired min width */
+        gap: 16px; /* Adjust spacing between items */
+        padding: 16px; /* Optional padding around the grid */
+    }
+    
 
 }

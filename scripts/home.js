@@ -1,3 +1,4 @@
+// import { fetchSimilarJob } from "./apply.js";
 const limit = 10;
 let currentOffset = 0;
 let offset = 0;
@@ -6,8 +7,9 @@ let title = document.querySelector('.job-search-bar').value
 let location = document.querySelector('.job-search-bar').value
 let dropdown = document.getElementById('sort-selection')
 let sortValue = dropdown.value
+let similarJobsList = []
 
-console.log(currentOffset)
+// console.log(currentOffset)
 
 const getSelectedRadioValue = () => {
     let selectedRadio = document.querySelector('input[name="datePosted"]:checked');
@@ -31,7 +33,7 @@ const fetchJobData = async (title= '', location='', date='', sortValue='') => {
     if(sortValue) {
         url += `&sort=${sortValue}`
     }
-    console.log(url)
+    // console.log(url)
     const response = await fetch(url);
     const data =  await response.json() 
     return data
@@ -68,26 +70,30 @@ const loadMoreJobs = async (title="", location="", date="", sortValue="") => {
     console.log(jobsData)
     displayJobs(jobsData['jobs'], jobsData['jobCount']);  // Render the jobs
     currentOffset += limit;  // Increment the offset
-    console.log(currentOffset)
+    // console.log(currentOffset)
 };
 
 
-document.querySelector('.job-search-button')
-    .addEventListener('click', async () => {
-        title = document.querySelector('.job-search-bar').value;
-        location = document.querySelector('.job-location-filter').value;
-        date = getSelectedRadioValue();
-        console.log(date)
-        jobs = []
-        currentOffset = 0
-        const jobsData = await fetchJobData(title, location, date); // Fetch jobs with pagination
-        document.querySelector('.js-job-card-section').innerHTML = ''
-        // window.location.href = url
-        displayJobs(jobsData['jobs'], jobsData['jobCount'])
-        currentOffset += limit;
-        document.querySelector('.js-expand-more-filters').style.display = 'none'
+document.querySelectorAll('.js-job-search-button, .js-big-job-search-button')
+    .forEach(button => {
+        button.addEventListener('click', async () => {
+            title = document.querySelector('.job-search-bar').value;
+            console.log(title)
+            location = document.querySelector('.job-location-filter').value;
+            date = getSelectedRadioValue();
+            console.log(date)
+            jobs = []
+            currentOffset = 0
+            const jobsData = await fetchJobData(title, location, date); // Fetch jobs with pagination
+            document.querySelector('.js-job-card-section').innerHTML = ''
+            // window.location.href = url
+            displayJobs(jobsData['jobs'], jobsData['jobCount'])
+            currentOffset += limit;
+            document.querySelector('.js-expand-more-filters').style.display = 'none'
+        })
+    
     })
-
+   
 
 // Initial Load
 loadMoreJobs();
@@ -104,7 +110,7 @@ window.addEventListener('scroll', () => {
 dropdown.addEventListener('change', async() => {
     document.querySelector('.js-job-card-section').innerHTML = ''
     sortValue = dropdown.value;
-    console.log(sortValue)
+    // console.log(sortValue)
     currentOffset = 0
     jobs = [] //This ensures thatjobs have the right index when clicked
     await loadMoreJobs(title, location, date, sortValue)
@@ -114,6 +120,7 @@ dropdown.addEventListener('change', async() => {
 
 
 const moreFilters = document.querySelector('.js-expand-more-filters')
+moreFilters.style.display = 'none';
 document.querySelector('.js-more-filters')
     .addEventListener('click', () => {
         moreFilters.style.display === 'none' ? moreFilters.style.display = 'block' : moreFilters.style.display ='none'
@@ -125,11 +132,81 @@ document.querySelector('.js-more-filter-close')
     })
 
 
-// Event listeners for job card click
-document.addEventListener('click', (e) => {
-    if (e.target.closest('.job-card')) {
-        const jobCard = e.target.closest('.job-card');
+
+let jobId;
+
+// Function to fetch job details based on jobId
+const fetchJob = async () => {
+    const response = await fetch(`http://127.0.0.1:8000/job/${jobId}`);
+    return await response.json(); 
+};
+
+// Event listener for click on job cards
+document.addEventListener('click', async (event) => {
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    
+    // Ensure we clicked on a job card
+    const jobCard = event.target.closest('.job-card');
+    if (jobCard) {
+        // Get the job index from the job cards array
         const jobIndex = Array.from(document.querySelectorAll('.job-card')).indexOf(jobCard);
-        window.location.href = `apply.html?jobId=${jobs[jobIndex].Id}`;
+        
+        if (isMobile) {
+            // On mobile: Redirect to a new page with jobId in the URL
+            window.location.href = `apply.html?jobId=${jobs[jobIndex].Id}`;
+        } else {
+            document.querySelector('.js-main-big-job-posting').innerHTML = "";
+            document.querySelector('.js-big-similar-job-card-section').innerHTML = "";
+            // On desktop: Update jobId and fetch job data
+            jobId = jobs[jobIndex].Id; // Ensure `jobs` contains your job data array with Ids
+            const job = await fetchJob(); // Fetch job data
+            
+            // Render job details on the page
+            const applyHTML = `
+                <div class="apply-header">
+                    <img class="apply-company-logo js-apply-company-logo" src="${job.CompanyLogo}" height="80px" width="80px">
+                    <h5 class="apply-company-name js-apply-company-name">${job.CompanyName}</h5>
+                </div>
+                <h1 class="job-title js-job-title">${job.Title}</h1>
+                <div class="job-description js-job-description">
+                    <p>${job.Description}</p>
+                </div>
+
+            `;
+            document.querySelector('.js-main-big-job-posting').innerHTML = applyHTML;
+
+            const fetchSimilarJob = async (jobId) => {
+                const response = await fetch(`http://127.0.0.1:8000/job/similar/${jobId}`);
+                return await response.json() 
+            
+            } 
+
+            const similarJobs = await fetchSimilarJob(jobId); // Await the fetching of job data
+            console.log(similarJobs)
+
+            // Store the fetched jobs in the globally accessible jobs array
+            similarJobsList.push(...similarJobs.results); // Append new jobs to the jobs array
+            console.log("Similar List", similarJobsList)
+
+            let similarJobsHTML = '';
+
+            similarJobs['results'].forEach((job) => { // Iterate through the jobs and create HTML for each
+                similarJobsHTML += `
+                    <div class="job-card">
+                        <img class="job-card-logo" src="${job.CompanyLogo}"height="80px" width="80px">
+                        <div class="job-card-text">
+                            <p class="job-card-title">${job.Title}</p>
+                            <p class="job-card-company">${job.CompanyName}</p>
+                            <p class="job-card-location">${job.Location}</p>
+                            <p class="job-card-date">${job.PublicationDate}</p>
+                        </div>
+                    </div>`;
+            });
+           
+            document.querySelector('.js-big-similar-job-card-section').innerHTML += similarJobsHTML; // Insert the job cards into the DOM
+            similarJobsList = []
+            
+        }
     }
 });
+
